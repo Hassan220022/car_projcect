@@ -90,9 +90,30 @@ void moveForward()
 	analogWrite(enable_left, variable_speed);	// Adjust the speed as needed
 	analogWrite(enable_right, variable_speed);	// Adjust the speed as needed	
 }
+void moveForward(int variable_speed)
+{
+	digitalWrite(left_motor_forward, HIGH);
+	digitalWrite(left_motor_backward, LOW);
+	digitalWrite(right_motor_forward, HIGH);
+	digitalWrite(right_motor_backward, LOW);
+
+	analogWrite(enable_left, variable_speed);	// Adjust the speed as needed
+	analogWrite(enable_right, variable_speed);	// Adjust the speed as needed	
+}
 
 
 void moveBackward()
+{
+	digitalWrite(left_motor_forward, LOW);
+	digitalWrite(left_motor_backward, HIGH);
+	digitalWrite(right_motor_forward, LOW);
+	digitalWrite(right_motor_backward, HIGH);
+
+	analogWrite(enable_left, variable_speed);	// Adjust the speed as needed
+	analogWrite(enable_right, variable_speed);	// Adjust the speed as needed	
+}
+
+void moveBackward(int variable_speed)
 {
 	digitalWrite(left_motor_forward, LOW);
 	digitalWrite(left_motor_backward, HIGH);
@@ -115,9 +136,29 @@ void turnRight()
 	analogWrite(enable_right, variable_speed);	// Adjust the speed as needed	
 }
 
+void turnRight(int variable_speed)
+{
+	digitalWrite(left_motor_forward, LOW);
+	digitalWrite(left_motor_backward, HIGH);
+	digitalWrite(right_motor_forward, HIGH);
+	digitalWrite(right_motor_backward, LOW);
 
+	analogWrite(enable_left, variable_speed);	// Adjust the speed as needed
+	analogWrite(enable_right, variable_speed);	// Adjust the speed as needed	
+}
 
 void turnLeft()
+{
+	digitalWrite(left_motor_forward, HIGH);
+	digitalWrite(left_motor_backward, LOW);
+	digitalWrite(right_motor_forward, LOW);
+	digitalWrite(right_motor_backward, HIGH);
+
+	analogWrite(enable_left, variable_speed);	// Adjust the speed as needed
+	analogWrite(enable_right, variable_speed);	// Adjust the speed as needed	
+}
+
+void turnLeft(int variable_speed)
 {
 	digitalWrite(left_motor_forward, HIGH);
 	digitalWrite(left_motor_backward, LOW);
