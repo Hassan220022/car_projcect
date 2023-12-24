@@ -15,7 +15,7 @@ const int right_motor_backward = 7;
 const int right_motor_forward = 6;
 
 // defalut motor speed
-const int motor_speed = 250;
+const int motor_speed = 100;
 int variable_speed = 0.0;
 
 // Define enable pins
@@ -237,8 +237,11 @@ void setup()
 	pinMode(sensor_power, OUTPUT);
 	// Set up the IR sensors
 	pinMode(orang_sensor, INPUT);
-
 	pinMode(green_sensor, INPUT);
+
+	// Set up the enable pins for the motors
+	pinMode(enable_left, OUTPUT);
+	pinMode(enable_right, OUTPUT);
 
 	// Set up the motors
 	pinMode(left_motor_forward, OUTPUT);
@@ -249,10 +252,8 @@ void setup()
 	// Set up the Bluetooth module
 	Serial.begin(9600);
 
-	// Set initial motor speed
-	variable_speed = motor_speed - variable_speed;
-	analogWrite(enable_left, variable_speed);  // Adjust the speed as needed
-	analogWrite(enable_right, variable_speed); // Adjust the speed as needed
+	analogWrite(enable_left, motor_speed);	// Adjust the speed as needed
+	analogWrite(enable_right, motor_speed); // Adjust the speed as needed
 }
 
 void loop()
