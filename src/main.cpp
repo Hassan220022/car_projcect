@@ -23,8 +23,8 @@ const int enable_left = 10;
 const int enable_right = 5;
 
 // Define the IR sensor pins
-const int orang_sensor = A1;
-const int green_sensor = A3;
+const int orang_sensor = 12;
+const int green_sensor = 13;
 
 // constant for PID control
 //  Ziegler-Nichols tuning rules for PID controller
@@ -33,9 +33,9 @@ const int green_sensor = A3;
 // const float Kd = Kp * Tu / 8; // Derivative constant
 
 // PID constants
-const float kp = 100;
-const float ki = 1;
-const float kd = 150;
+const float kp = 150;
+const float ki = 5;
+const float kd = 50;
 
 // PID variables
 float Previous_error = 0.0;
@@ -51,24 +51,75 @@ const int MODE_AUTO = 1;
 // Start in RC mode
 int mode = MODE_RC;
 
+void moveForward(int var1, int var2)
+{
+	digitalWrite(left_motor_forward, HIGH);
+	digitalWrite(left_motor_backward, LOW);
+	digitalWrite(right_motor_forward, HIGH);
+	digitalWrite(right_motor_backward, LOW);
+
+	analogWrite(enable_left, var1);	 // Adjust the speed as needed
+	analogWrite(enable_right, var2); // Adjust the speed as needed
+}
+void moveBackward(int var1, int var2)
+{
+	digitalWrite(left_motor_forward, LOW);
+	digitalWrite(left_motor_backward, HIGH);
+	digitalWrite(right_motor_forward, LOW);
+	digitalWrite(right_motor_backward, HIGH);
+
+	analogWrite(enable_left, var1);	 // Adjust the speed as needed
+	analogWrite(enable_right, var2); // Adjust the speed as needed
+}
+void turnRight(int var1, int var2)
+{
+	digitalWrite(left_motor_forward, LOW);
+	digitalWrite(left_motor_backward, HIGH);
+	digitalWrite(right_motor_forward, HIGH);
+	digitalWrite(right_motor_backward, LOW);
+
+	analogWrite(enable_left, var1);	 // Adjust the speed as needed
+	analogWrite(enable_right, var2); // Adjust the speed as needed
+}
+void turnLeft(int var1, int var2)
+{
+	digitalWrite(left_motor_forward, HIGH);
+	digitalWrite(left_motor_backward, LOW);
+	digitalWrite(right_motor_forward, LOW);
+	digitalWrite(right_motor_backward, HIGH);
+
+	analogWrite(enable_left, var1);	 // Adjust the speed as needed
+	analogWrite(enable_right, var2); // Adjust the speed as needed
+}
+
+void stop()
+{
+	digitalWrite(left_motor_forward, LOW);
+	digitalWrite(left_motor_backward, LOW);
+	digitalWrite(right_motor_forward, LOW);
+	digitalWrite(right_motor_backward, LOW);
+	analogWrite(enable_left, 0);
+	analogWrite(enable_right, 0);
+}
+
 float posistion(int left_value_orange, int right_value_green)
 {
 	if (left_value_orange == LOW && right_value_green == LOW)
 	{
-		return 0.30;
+		return 0.10;
 	}
 	else if (left_value_orange == LOW)
 	{
-		return 0.15;
+		return 0.05;
 	}
 	else if (right_value_green == LOW)
 	{
-		return 0.45;
+		return 0.15;
 	}
 }
 void error_calc(int var1, int var2, float error, int counter)
 {
-	if (counter != 0)
+	if (counter != 0 && error != 0)
 	{
 		counter = 50;
 		// on the track - move forword
@@ -104,7 +155,7 @@ void error_calc(int var1, int var2, float error, int counter)
 void PID(int orange_value, int green_value)
 {
 	// Calculate error (difference from the desired position)
-	float error = posistion(orange_value, green_value) - 0.30;
+	float error = posistion(orange_value, green_value) - 0.10;
 
 	// PID control to adjust motor speeds based on error
 	float proportional = kp * error;
@@ -132,7 +183,7 @@ void PID(int orange_value, int green_value)
 	Previous_error = error;
 
 	// Line following logic
-	error_calc(var2, var1, error, count);
+	error_calc(var1, var2, error, count);
 }
 
 void moveForward()
@@ -144,16 +195,6 @@ void moveForward()
 
 	analogWrite(enable_left, variable_speed);  // Adjust the speed as needed
 	analogWrite(enable_right, variable_speed); // Adjust the speed as needed
-}
-void moveForward(int var1, int var2)
-{
-	digitalWrite(left_motor_forward, HIGH);
-	digitalWrite(left_motor_backward, LOW);
-	digitalWrite(right_motor_forward, HIGH);
-	digitalWrite(right_motor_backward, LOW);
-
-	analogWrite(enable_left, var1);	 // Adjust the speed as needed
-	analogWrite(enable_right, var2); // Adjust the speed as needed
 }
 
 void moveBackward()
@@ -167,17 +208,6 @@ void moveBackward()
 	analogWrite(enable_right, variable_speed); // Adjust the speed as needed
 }
 
-void moveBackward(int var1, int var2)
-{
-	digitalWrite(left_motor_forward, LOW);
-	digitalWrite(left_motor_backward, HIGH);
-	digitalWrite(right_motor_forward, LOW);
-	digitalWrite(right_motor_backward, HIGH);
-
-	analogWrite(enable_left, var1);	 // Adjust the speed as needed
-	analogWrite(enable_right, var2); // Adjust the speed as needed
-}
-
 void turnRight()
 {
 	digitalWrite(left_motor_forward, LOW);
@@ -189,17 +219,6 @@ void turnRight()
 	analogWrite(enable_right, variable_speed); // Adjust the speed as needed
 }
 
-void turnRight(int var1, int var2)
-{
-	digitalWrite(left_motor_forward, LOW);
-	digitalWrite(left_motor_backward, HIGH);
-	digitalWrite(right_motor_forward, HIGH);
-	digitalWrite(right_motor_backward, LOW);
-
-	analogWrite(enable_left, var1);	 // Adjust the speed as needed
-	analogWrite(enable_right, var2); // Adjust the speed as needed
-}
-
 void turnLeft()
 {
 	digitalWrite(left_motor_forward, HIGH);
@@ -209,27 +228,6 @@ void turnLeft()
 
 	analogWrite(enable_left, variable_speed);  // Adjust the speed as needed
 	analogWrite(enable_right, variable_speed); // Adjust the speed as needed
-}
-
-void turnLeft(int var1, int var2)
-{
-	digitalWrite(left_motor_forward, HIGH);
-	digitalWrite(left_motor_backward, LOW);
-	digitalWrite(right_motor_forward, LOW);
-	digitalWrite(right_motor_backward, HIGH);
-
-	analogWrite(enable_left, var1);	 // Adjust the speed as needed
-	analogWrite(enable_right, var2); // Adjust the speed as needed
-}
-
-void stop()
-{
-	digitalWrite(left_motor_forward, LOW);
-	digitalWrite(left_motor_backward, LOW);
-	digitalWrite(right_motor_forward, LOW);
-	digitalWrite(right_motor_backward, LOW);
-	analogWrite(enable_left, 0);
-	analogWrite(enable_right, 0);
 }
 
 void setup()
@@ -261,7 +259,6 @@ void loop()
 	// Check for Bluetooth commands
 	if (Serial.available() > 0)
 	{
-	start:
 		char command = Serial.read();
 		Serial.print(command);
 
@@ -340,7 +337,6 @@ void loop()
 		else if (mode == MODE_AUTO)
 		{
 			digitalWrite(sensor_power, HIGH);
-			variable_speed = 0;
 			// Read sensor values
 			int left_value_orange = digitalRead(orang_sensor);
 			int right_value_green = digitalRead(green_sensor);
